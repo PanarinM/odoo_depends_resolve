@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import argparse
 from parse_dir import DirectoryParser
+from pprint import pprint
 
 
 def get_args():
@@ -17,6 +18,12 @@ def get_args():
 def main():
     args = get_args()
     dir_parser = DirectoryParser(args.paths)
+    result = [
+        x.get_cyclic_dependencies()
+        for x in dir_parser.modules
+        if x.get_cyclic_dependencies()
+    ]
+    pprint(result)
 
 
 if __name__ == '__main__':

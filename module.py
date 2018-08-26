@@ -60,6 +60,41 @@ class Module(object):
         expand(self)
         return exp_children
 
+    def get_cyclic_dependencies(self):
+        if self not in self.expanded_children:
+            return False
+        result = [[self.tech_name] + path
+                  for path in self.__get_cyclic_dependencies()]
+        return result
+
+
+    def __get_graph_of_children(self):
+        modules = self.expanded_children
+        graph = {
+            x.tech_name: [y.tech_name for y in x.children]
+            for x in modules
+        }
+        return graph
+
+    def __get_cyclic_dependencies(self):
+        graph = self.__get_graph_of_children()
+        fringe = [(self.tech_name, [])]
+        while fringe:
+            state, path = fringe.pop()
+            if path and state == self.tech_name:
+                yield path
+                continue
+            for next_state in graph[state]:
+                if next_state in path:
+                    continue
+                fringe.append((next_state, path + [next_state]))
+
+    def has_child(self, name, key="tech_name"):
+        return bool(name in map(lambda x: getattr(self, key), self.children))
+
+    def has_parent(self, name, key="tech_name"):
+        return bool(name in map(lambda x: getattr(self, key), self.parents))
+
 
 class UnknownModule(Module):
 
