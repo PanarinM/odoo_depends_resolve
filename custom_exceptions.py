@@ -1,0 +1,2 @@
+class DescriptorError(Exception):
+    pass
