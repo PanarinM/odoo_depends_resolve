@@ -17,7 +17,6 @@ def get_args():
 def main():
     args = get_args()
     dir_parser = DirectoryParser(args.paths)
-    print(dir_parser.modules)
 
 
 if __name__ == '__main__':
